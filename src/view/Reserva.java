@@ -1,0 +1,458 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
+ */
+package view;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import controller.EmpleadoDAO;
+import controller.HabitacionDAO;
+import controller.HuespedDAO;
+import controller.ReservasDAO;
+import dto.EmpleadoDTO;
+import dto.HabitacionDTO;
+import dto.HuespedDTO;
+import dto.ReservasDTO;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+
+/**
+ *
+ * @author slaye
+ */
+public class Reserva extends javax.swing.JDialog {
+
+    /**
+     * Creates new form Reserva
+     */
+    private String action;
+    private int id;
+    static private view.Reservas parent;
+    private ReservasDAO dao = new ReservasDAO();
+    private ReservasDTO rv;
+    private HuespedDAO hdao = new HuespedDAO();
+    private EmpleadoDAO edao = new EmpleadoDAO();
+    private HabitacionDAO hadao = new HabitacionDAO();
+    
+    
+    
+    //comboBox.addItem(new ComboItem("Visible String 1", "Value 1"));
+    
+    
+    
+    public Reserva(view.Reservas parent, boolean modal, String action, int id) {
+        super(parent, modal);
+        initComponents();
+        this.parent = parent;
+        this.action = action;
+        this.id = id; 
+        
+        this.setLocationRelativeTo(null);
+         List<Object> huespeds  = hdao.getAll();
+         List<Object> empleados = edao.getAll();
+         List<Object> habitaciones = hadao.getComboBox();
+         
+        for(Object huesped_uncast : huespeds){
+            HuespedDTO huesped = (HuespedDTO) huesped_uncast;
+            cbx_huesped.addItem(huesped.getHuesped());
+        }
+         
+        for(Object empleado_uncast : empleados){
+            EmpleadoDTO empleado = (EmpleadoDTO) empleado_uncast;
+            cbx_reserva.addItem(empleado.getEmpleado());
+        }
+         
+        for(Object habitacion_uncast : habitaciones){
+            HabitacionDTO habitacion = (HabitacionDTO) habitacion_uncast;
+            cbx_habitacion.addItem(habitacion.getHabitacion());
+        }
+        
+        loadReserva();
+        
+    }
+    
+    private Date formatedDate(String  date){
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
+        try {
+            return formatter.parse(date);
+        } catch (ParseException ex) {
+            Logger.getLogger(Reserva.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+    private void loadReserva(){
+        if(action == "EDIT"){
+            rv = new ReservasDTO();
+            rv = (ReservasDTO)dao.getById(id);
+            //ZoneId defaultZoneId = ZoneId.systemDefault();
+            
+            //dtp_fecha_reserva.setDateToToday();
+            
+            
+            DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            
+            String fr = formatter.format(rv.getFecha_reserva());
+            
+            System.out.println(fr);
+            
+            LocalDate lfr = LocalDate.parse(fr);
+            
+            dtp_fecha_reserva.setDate(lfr);
+            
+            String fs = formatter.format(rv.getFecha_salida());
+            
+            System.out.println(fs);
+            
+            LocalDate lfs = LocalDate.parse(fs);
+            
+            dtp_fecha_salida.setDate(lfs);
+            
+            int i;
+            int t;
+            String v;
+            
+            i= 0;
+            t = cbx_habitacion.getItemCount();
+            while(i < t){
+            cbx_habitacion.setSelectedIndex(i);
+            v = cbx_habitacion.getSelectedItem().toString();
+            if(v.equals(rv.getHabitacion())){
+                i = t;
+                }
+            i= i + 1;
+            }
+            
+            i= 0;
+            t = cbx_huesped.getItemCount();
+            while(i < t){
+            cbx_huesped.setSelectedIndex(i);
+            v = cbx_huesped.getSelectedItem().toString();
+            if(v.equals(rv.getHuesped())){
+                i = t;
+                }
+            i= i + 1;
+            }
+            
+            i= 0;
+            t = cbx_reserva.getItemCount();
+            while(i < t){
+            cbx_reserva.setSelectedIndex(i);
+            v = cbx_reserva.getSelectedItem().toString();
+            if(v.equals(rv.getRegistro())){
+                i = t;
+                }
+            i= i + 1;
+            }
+            
+            
+        }
+    }
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        calendarPanel1 = new com.github.lgooddatepicker.components.CalendarPanel();
+        jDatePickerUtil1 = new org.jdatepicker.util.JDatePickerUtil();
+        jDatePickerUtil2 = new org.jdatepicker.util.JDatePickerUtil();
+        jDateComponentFactory1 = new org.jdatepicker.JDateComponentFactory();
+        sqlDateModel1 = new org.jdatepicker.impl.SqlDateModel();
+        utilDateModel1 = new org.jdatepicker.impl.UtilDateModel();
+        jDatePickerUtil3 = new org.jdatepicker.util.JDatePickerUtil();
+        jDatePickerUtil4 = new org.jdatepicker.util.JDatePickerUtil();
+        utilDateModel2 = new org.jdatepicker.impl.UtilDateModel();
+        utilCalendarModel1 = new org.jdatepicker.impl.UtilCalendarModel();
+        lbl_fecha_reserva = new javax.swing.JLabel();
+        lbl_fecha_reserva1 = new javax.swing.JLabel();
+        dtp_fecha_salida = new com.github.lgooddatepicker.components.DatePicker();
+        dtp_fecha_reserva = new com.github.lgooddatepicker.components.DatePicker();
+        lbl_fecha_reserva2 = new javax.swing.JLabel();
+        lbl_fecha_reserva3 = new javax.swing.JLabel();
+        lbl_fecha_reserva4 = new javax.swing.JLabel();
+        cbx_habitacion = new javax.swing.JComboBox<>();
+        cbx_huesped = new javax.swing.JComboBox<>();
+        cbx_reserva = new javax.swing.JComboBox<>();
+        btn_guardar = new javax.swing.JButton();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+        lbl_fecha_reserva.setText("Fecha de Salida");
+        lbl_fecha_reserva.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
+        lbl_fecha_reserva1.setText("Reservar para Fecha");
+        lbl_fecha_reserva1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
+        lbl_fecha_reserva2.setText("Registro la Reserva");
+        lbl_fecha_reserva2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
+        lbl_fecha_reserva3.setText("Habitacion");
+        lbl_fecha_reserva3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
+        lbl_fecha_reserva4.setText("Huesped");
+        lbl_fecha_reserva4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
+        btn_guardar.setText("Guardar");
+        btn_guardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_guardarActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(30, 30, 30)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(lbl_fecha_reserva4, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lbl_fecha_reserva2, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lbl_fecha_reserva3, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lbl_fecha_reserva1, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lbl_fecha_reserva, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 8, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(cbx_habitacion, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(cbx_huesped, 0, 176, Short.MAX_VALUE)
+                    .addComponent(dtp_fecha_reserva, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(btn_guardar)
+                        .addComponent(dtp_fecha_salida, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cbx_reserva, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(30, 30, 30))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(30, 30, 30)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lbl_fecha_reserva3)
+                    .addComponent(cbx_habitacion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lbl_fecha_reserva4)
+                    .addComponent(cbx_huesped, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lbl_fecha_reserva2)
+                    .addComponent(cbx_reserva, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(14, 14, 14)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lbl_fecha_reserva1)
+                    .addComponent(dtp_fecha_reserva, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(dtp_fecha_salida, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lbl_fecha_reserva))
+                .addGap(18, 18, 18)
+                .addComponent(btn_guardar)
+                .addContainerGap(13, Short.MAX_VALUE))
+        );
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void btn_guardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_guardarActionPerformed
+        // TODO add your handling code here:                                        
+        // TODO add your handling code here:
+        ZoneId defaultZoneId = ZoneId.systemDefault();
+                DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+           if(action.equals("NEW")){
+            boolean validacion = validar();
+            if(validacion){
+                int hapos = cbx_habitacion.getSelectedItem().toString().indexOf('-');
+                int haval = Integer.parseInt(cbx_habitacion.getSelectedItem().toString().substring(0, hapos));
+                int hupos = cbx_huesped.getSelectedItem().toString().indexOf('-');
+                int huval = Integer.parseInt(cbx_huesped.getSelectedItem().toString().substring(0, hupos));
+                int repos = cbx_reserva.getSelectedItem().toString().indexOf('-');
+                int reval = Integer.parseInt(cbx_reserva.getSelectedItem().toString().substring(0, repos));
+                String sfr = dtp_fecha_reserva.getDate().toString();
+                String sfs = dtp_fecha_salida.getDate().toString();
+                
+                System.out.println(haval);
+                System.out.println(huval);
+                System.out.println(reval);
+                System.out.println(sfr);
+                System.out.println(sfs);
+                Date dfr= new Date();
+                try {
+                    dfr = formatter.parse(sfr);
+                } catch (ParseException ex) {
+                    Logger.getLogger(Reserva.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                Date dfs= new Date();
+                try {
+                    dfs = formatter.parse(sfs);
+                } catch (ParseException ex) {
+                    Logger.getLogger(Reserva.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                model.Reservas newReservas = new model.Reservas();
+                newReservas.setFecha_reserva(dfr);
+                newReservas.setFecha_salida(dfs);
+                newReservas.setHabitacion_id(haval);
+                newReservas.setHuesped_id(huval);
+                newReservas.setEmpleado_id(reval);
+                
+                
+                System.out.println(newReservas.getFecha_reserva());
+                System.out.println(newReservas.getFecha_salida());
+                System.out.println(newReservas.getHabitacion_id());
+                System.out.println(newReservas.getHuesped_id());
+                System.out.println(newReservas.getReserva_id());
+                
+                boolean operacion = dao.insert(newReservas);
+                if(operacion){
+                    parent.refreshTabla();
+                    this.dispose();
+                }
+            }
+        }
+        if(action.equals("EDIT")){
+            boolean validacion = validar();
+            if(validacion){
+                model.Reservas rvs = new model.Reservas(rv.getReserva_id());
+      
+                int hapos = cbx_habitacion.getSelectedItem().toString().indexOf('-');
+                int haval = Integer.parseInt(cbx_habitacion.getSelectedItem().toString().substring(0, hapos));
+                int hupos = cbx_huesped.getSelectedItem().toString().indexOf('-');
+                int huval = Integer.parseInt(cbx_huesped.getSelectedItem().toString().substring(0, hupos));
+                int repos = cbx_reserva.getSelectedItem().toString().indexOf('-');
+                int reval = Integer.parseInt(cbx_reserva.getSelectedItem().toString().substring(0, repos));
+                String sfr = dtp_fecha_reserva.getDate().toString();
+                String sfs = dtp_fecha_salida.getDate().toString();
+                Date dfr= new Date();
+                try {
+                    dfr = formatter.parse(sfr);
+                } catch (ParseException ex) {
+                    Logger.getLogger(Reserva.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                Date dfs= new Date();
+                try {
+                    dfs = formatter.parse(sfs);
+                } catch (ParseException ex) {
+                    Logger.getLogger(Reserva.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                rvs.setFecha_reserva(dfr);
+                rvs.setFecha_salida(dfs);
+                rvs.setHabitacion_id(haval);
+                rvs.setHuesped_id(huval);
+                rvs.setEmpleado_id(reval);
+                boolean operacion = dao.update(rvs);
+                if(operacion){
+                    parent.refreshTabla();
+                    this.dispose();
+                }
+            }
+        }
+    }//GEN-LAST:event_btn_guardarActionPerformed
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(Reserva.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(Reserva.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(Reserva.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(Reserva.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the dialog */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                Reserva dialog = new Reserva(new view.Reservas(), true,"",0);
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent e) {
+                        System.exit(0);
+                    }
+                });
+                dialog.setVisible(true);
+            }
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btn_guardar;
+    private com.github.lgooddatepicker.components.CalendarPanel calendarPanel1;
+    private javax.swing.JComboBox<String> cbx_habitacion;
+    private javax.swing.JComboBox<String> cbx_huesped;
+    private javax.swing.JComboBox<String> cbx_reserva;
+    private com.github.lgooddatepicker.components.DatePicker dtp_fecha_reserva;
+    private com.github.lgooddatepicker.components.DatePicker dtp_fecha_salida;
+    private org.jdatepicker.JDateComponentFactory jDateComponentFactory1;
+    private org.jdatepicker.util.JDatePickerUtil jDatePickerUtil1;
+    private org.jdatepicker.util.JDatePickerUtil jDatePickerUtil2;
+    private org.jdatepicker.util.JDatePickerUtil jDatePickerUtil3;
+    private org.jdatepicker.util.JDatePickerUtil jDatePickerUtil4;
+    private javax.swing.JLabel lbl_fecha_reserva;
+    private javax.swing.JLabel lbl_fecha_reserva1;
+    private javax.swing.JLabel lbl_fecha_reserva2;
+    private javax.swing.JLabel lbl_fecha_reserva3;
+    private javax.swing.JLabel lbl_fecha_reserva4;
+    private org.jdatepicker.impl.SqlDateModel sqlDateModel1;
+    private org.jdatepicker.impl.UtilCalendarModel utilCalendarModel1;
+    private org.jdatepicker.impl.UtilDateModel utilDateModel1;
+    private org.jdatepicker.impl.UtilDateModel utilDateModel2;
+    // End of variables declaration//GEN-END:variables
+
+    private boolean validar() {
+        
+        String sfr; 
+        try {
+            sfr = dtp_fecha_reserva.getDate().toString();
+        } catch (Exception ex) {
+            sfr = "";
+        }
+         String sfs ;
+        try {
+            sfs = dtp_fecha_salida.getDate().toString();
+        } catch (Exception ex) {
+            sfs = "";
+        }
+         if(sfr.equals("") || sfr.equals(null)){
+            JOptionPane.showMessageDialog(parent, "Debe seleccionar la fecha de reserva", "ERROR DE VALIDACIÓN", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+         if(sfs.equals("") || sfs.equals(null)){
+            JOptionPane.showMessageDialog(parent, "Debe seleccionar la fecha de salida", "ERROR DE VALIDACIÓN", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        return true;
+    } 
+}

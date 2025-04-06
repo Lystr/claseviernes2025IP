@@ -1,0 +1,199 @@
+CREATE DATABASE hotel_reservas;
+USE hotel_reservas;
+
+create table usuarios (
+    usuarios_id int not null auto_increment,
+    username varchar(50) unique,
+    password_hash varchar(255),
+    rol enum('admin', 'recepcionista') default 'recepcionista',
+	primary key (usuarios_id)
+);
+
+create table huesped(
+	huesped_id 			int not null auto_increment,
+	primer_nombre 		varchar(255) not null,
+	segundo_nombre 		varchar(255),
+	tercer_nombre 		varchar(255),
+	primer_apellido  	varchar(255) not null,
+	segundo_apellido  	varchar(255),
+	edad 				int,
+    fecha_registro 		datetime default current_timestamp,
+	primary key (huesped_id)
+);
+
+create table costo(
+	costo_id		int not null auto_increment,
+	costo      		float(6,2) not null,
+	impuesto 		float(6,2) not null,
+	fecha_registro 	datetime default current_timestamp,
+	primary key (costo_id)
+);
+
+create table habitacion(
+	habitacion_id 	int not null auto_increment,
+	ubicacion 		varchar(255) not null,
+	acomodacion     int not null,
+	costo_id      	int not null,
+	fecha_registro 	datetime default current_timestamp,
+	primary key (habitacion_id),
+    foreign key (costo_id) references costo(costo_id)
+);
+
+create index idx_habitacion_costo_id on habitacion(costo_id);
+
+create table empleado(
+	empleado_id 		int not null auto_increment,
+    primer_nombre 		varchar(255),
+	segundo_nombre 		varchar(255),
+	tercer_nombre 		varchar(255),
+	primer_apellido  	varchar(255) not null,
+	segundo_apellido  	varchar(255),
+    puesto 				varchar(255) not null,
+	edad 				int,
+	fecha_registro 		datetime default current_timestamp,
+	primary key (empleado_id)
+);
+
+create table estado(
+	estado_id 	int not null auto_increment,
+	estado 		varchar(255),
+	primary key (estado_id)
+);
+
+create table reserva(
+	reserva_id 	int not null auto_increment,
+    fecha_reserva 	datetime,
+	fecha_salida 	datetime,	
+    huesped_id 		int not null,
+    habitacion_id  	int not null,
+	dias 			int,
+    costo      		float(6,2),
+	impuesto  		float(6,2),
+	monto_total 	int,
+	empleado_id 	int,
+	estado_id	 	int default 1,
+	fecha_registro 	datetime default current_timestamp,
+	primary key (reserva_id),
+    foreign key (huesped_id) references huesped(huesped_id),
+    foreign key (habitacion_id) references habitacion(habitacion_id),
+    foreign key (empleado_id) references empleado(empleado_id),
+    foreign key (estado_id) references estado(estado_id)
+);
+
+create index idx_reserva_huesped_id on reserva (huesped_id);
+create index idx_reserva_habitacion_id on reserva (habitacion_id);
+create index idx_reserva_empleado_id on reserva (empleado_id);
+
+
+create table metodo_pago(
+	metodo_pago_id 	int not null auto_increment,
+	metodo 			varchar(255),
+	primary key (metodo_pago_id)
+);
+
+create table pagos(
+	pagos_id 			int not null auto_increment,
+	reserva_id 			int not null,
+	metodo_pago_id 		int not null,
+	costo      			float(6,2) not null,
+	impuesto  			float(6,2) not null,
+	monto_total 		int not null,
+	empleado_id 		int not null,
+	fecha_registro 		datetime default current_timestamp,
+	primary key (pagos_id),
+    foreign key (reserva_id) references reserva(reserva_id),
+    foreign key (metodo_pago_id) references metodo_pago(metodo_pago_id),
+    foreign key (empleado_id) references empleado(empleado_id)
+);
+
+create index idx_pagos_reserva_id on pagos (reserva_id);
+create index idx_pagos_metodo_pago_id on pagos (metodo_pago_id);
+create index idx_pagos_empleado_id on pagos (empleado_id);
+
+
+
+-- Insertar registros de usuarios
+INSERT INTO usuarios (username, password_hash, rol) VALUES 
+('admin', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', 'admin');
+-- password es admin en sha-256 generado por la clase HashPassword en bd
+
+-- Insertar registros de huesped
+INSERT INTO huesped (huesped_id, primer_nombre, primer_apellido, edad, fecha_registro) VALUES 
+(1, 'Luis', 'Gomez', 24, '2024-02-29'), 
+(2, 'Julio', 'Perez', 31, '2024-03-26'), 
+(3, 'Cesar', 'Ramirez', 25, '2024-05-01'), 
+(4, 'Maria', 'Feliciano', 55, '2024-06-05'), 
+(5, 'Roberto', 'Cruz', 41, '2023-03-26'),
+(6, 'Lucia', 'Savaleta', 23, '2024-07-19'), 
+(7, 'Jose', 'Fernandez', 32, '2024-11-02'), 
+(8, 'Silvia', 'Mendez', 44, '2024-05-15'), 
+(9, 'Ramon', 'Bustamante', 38, '2024-08-13'), 
+(10, 'Esperanza', 'Licona', 22, '2024-09-07');
+
+-- Insertar registros de costo
+INSERT INTO costo(costo_id, costo, impuesto, fecha_registro) VALUES 
+(1, 2000.00, 200, '2024-02-29'), 
+(2, 2000.00, 200,'2024-03-26'), 
+(3, 3500.00, 350, '2024-05-01'), 
+(4, 3500.00, 350,'2024-06-05'), 
+(5, 3500.00, 350,'2023-03-26'),
+(6, 8000.00, 800, '2024-07-19'), 
+(7, 4500.00, 450, '2024-11-02'), 
+(8, 4000.00, 400, '2024-05-15'), 
+(9, 4000.00, 400, '2024-08-13'), 
+(10, 9000.00, 900.00, '2024-09-07');
+
+
+-- Insertar registros de habitacion
+INSERT INTO habitacion(habitacion_id, ubicacion, acomodacion, costo_id, fecha_registro) VALUES 
+(1, 'Primer piso', 1, 1, '2024-02-29'), 
+(2, 'Primer piso', 1, 2,'2024-03-26'), 
+(3, 'Primer piso', 2, 3, '2024-05-01'), 
+(4, 'Segundo piso', 2, 4,'2024-06-05'), 
+(5, 'Segundo piso', 2, 5,'2023-03-26'),
+(6, 'Segundo piso', 4, 6, '2024-07-19'), 
+(7, 'Tercer piso', 2, 7, '2024-11-02'), 
+(8, 'Tercer piso', 1, 8, '2024-05-15'), 
+(9, 'Tercer piso', 1, 9, '2024-08-13'), 
+(10, 'Suit', 5, 10, '2024-09-07');
+
+
+-- Insertar registros de empleado
+INSERT INTO empleado (empleado_id, primer_nombre, primer_apellido, edad, puesto, fecha_registro) VALUES 
+(1, 'Pedro', 'Mendoza', 24, 'Administrador', '2024-02-29'), 
+(2, 'Martha', 'Espinoza', 31, 'Recepcionista', '2024-03-26'), 
+(3, 'Amber', 'Lopez', 25, 'Recepcionista', '2024-05-01'), 
+(4, 'Esteban', 'Feliciano', 55, 'Gerente',  '2024-06-05'), 
+(5, 'Samuel', 'Alvarez', 41, 'Recepcionista', '2023-03-26'),
+(6, 'Roxana', 'Perez', 22, 'Recepcionista', '2024-09-07');
+
+
+-- Insertar registros de estado
+INSERT INTO estado (estado_id, estado) VALUES 
+(1, 'Reservada'), 
+(2, 'Finalizada'), 
+(3, 'Cancelada');
+
+-- Insertar registros de reserva
+INSERT INTO reserva (reserva_id, fecha_reserva, fecha_salida, huesped_id, habitacion_id, dias, costo, impuesto, monto_total, empleado_id, estado_id, fecha_registro) VALUES 
+(1, '2025-02-26', '2025-02-28', 2, 5, 2, 3500.00, 350.00, 7700.00, 4, 1, '2025-01-15'), 
+(2, '2025-02-24', '2025-02-25', 3, 6, 2, 8000.00, 800.00, 17600.00, 2, 2, '2025-01-15'), 
+(3, '2025-02-25', '2025-02-28', 6, 6, 3, 8000.00, 800.00, 26400.00, 3, 1, '2025-01-15'), 
+(4, '2025-02-25', '2025-02-28', 6, 9, 3, 4000.00, 400.00, 11550.00, 3, 1, '2025-01-15'), 
+(5, '2025-02-20', '2025-02-23', 1, 1, 3, 2000.00, 200.00, 6600.00, 1, 1, '2025-01-15'), 
+(6, '2025-02-18', '2025-02-20', 4, 1, 2, 2000.00, 200.00, 4400.00, 6, 2, '2025-01-15'), 
+(7, '2025-02-18', '2025-02-20', 4, 2, 2, 2000.00, 200.00, 4400.00, 6, 2, '2025-01-15'), 
+(8, '2025-02-21', '2025-02-24', 7, 4, 3, 3500.00, 350.00, 11550.00, 4, 3, '2025-01-15');
+
+-- Insertar registros de metodo_pago
+INSERT INTO metodo_pago (metodo_pago_id, metodo) VALUES 
+(1, 'Efectivo'), 
+(2, 'Tarjeta');
+
+-- Insertar registros de pagos
+INSERT INTO pagos (pagos_id, reserva_id, metodo_pago_id, costo, impuesto, monto_total, empleado_id, fecha_registro) VALUES 
+(1, 6, 1, 2000.00, 200.00, 4400.00, 2, '2025-02-20'), 
+(2, 7, 2, 2000.00, 200.00, 4400.00, 2, '2025-02-20'), 
+(3, 2, 1, 8000.00, 800.00, 17600.00, 3, '2025-02-25');
+
+ 
